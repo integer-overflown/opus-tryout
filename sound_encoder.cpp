@@ -24,7 +24,10 @@ void SoundEncoder::start() {
     auto dev = input_->start();
 
     QObject::connect(dev, &QIODevice::readyRead, [=] {
-        auto buf = dev->readAll();
+        buffer_.append(dev->read(1920));
+        if (buffer_.length() < 1920) return;
+        auto buf = QByteArray::fromRawData(buffer_.data(), 1920);
+        buffer_.remove(0, 1920);
         auto out = pipeline_.encode(buf);
         emit frameEncoded(out);
     });
