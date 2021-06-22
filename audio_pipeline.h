@@ -10,6 +10,7 @@ public:
 public:
     static constexpr int kSampleRate = 48'000;
     static constexpr int kChannelCount = 1;
+    static constexpr int kSampleSize = 16;
 };
 
 

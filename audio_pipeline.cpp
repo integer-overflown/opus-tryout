@@ -8,7 +8,7 @@ QAudioFormat AudioPipeline::setupAudioFormat(const QAudioDeviceInfo &device) {
     fmt.setSampleRate(kSampleRate);
     fmt.setChannelCount(kChannelCount);
     fmt.setCodec("audio/pcm");
-    fmt.setSampleSize(16);
+    fmt.setSampleSize(kSampleSize);
     fmt.setSampleType(QAudioFormat::SignedInt); // required for 16 bits
     fmt.setByteOrder(QAudioFormat::LittleEndian); // required for Opus
 
@@ -21,5 +21,6 @@ QAudioFormat AudioPipeline::setupAudioFormat(const QAudioDeviceInfo &device) {
         qInfo() << "FORMAT: byte order" << fmt.byteOrder();
         qInfo() << "";
     }
+
     return fmt;
 }
