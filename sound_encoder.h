@@ -22,7 +22,6 @@ public:
     explicit SoundEncoder(const QAudioDeviceInfo &, const QAudioFormat& format);
     void start();
     void stop();
-    QAudioFormat format() const;
 
 signals:
     void frameEncoded(QByteArray);

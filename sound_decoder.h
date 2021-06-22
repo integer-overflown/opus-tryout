@@ -5,6 +5,8 @@
 #include <QScopedPointer>
 #include <QAudioOutput>
 
+#include "audio_opus_pipeline.h"
+
 class OpusDecoder;
 class QByteArray;
 
@@ -12,14 +14,13 @@ class SoundDecoder : public QObject {
     Q_OBJECT
 public:
     explicit SoundDecoder(const QAudioDeviceInfo&, const QAudioFormat&);
-    ~SoundDecoder() override;
+
 public slots:
     void start();
     void playDecoded(const QByteArray&);
 private:
+    OpusDecoderPipeline pipeline_;
     QAudioDeviceInfo device_;
-    OpusDecoder *decoder_;
-    QAudioFormat format_;
     QScopedPointer<QAudioOutput> output_;
     QIODevice *output_device_;
 };

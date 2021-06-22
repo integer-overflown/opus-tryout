@@ -16,10 +16,12 @@ int main(int argc, char *argv[]) {
     QThread audio;
 
     const QAudioDeviceInfo &deviceInfo = QAudioDeviceInfo::defaultInputDevice();
-    SoundEncoder encoder(deviceInfo, AudioPipeline::setupAudioFormat(deviceInfo));
+    const QAudioFormat &format = AudioPipeline::setupAudioFormat(deviceInfo);
+
+    SoundEncoder encoder(deviceInfo, format);
     encoder.moveToThread(&audio);
 
-    SoundDecoder decoder(QAudioDeviceInfo::defaultOutputDevice(), encoder.format());
+    SoundDecoder decoder(QAudioDeviceInfo::defaultOutputDevice(), format);
 
     QObject::connect(&encoder, &SoundEncoder::frameEncoded, &decoder, &SoundDecoder::playDecoded);
 

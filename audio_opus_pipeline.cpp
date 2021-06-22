@@ -4,7 +4,7 @@
 #include <QDebug>
 #include <opus/opus.h>
 
-AudioOpusPipeline::AudioOpusPipeline(const QAudioFormat &format) : format_(format), constants_(format) {
+OpusEncoderPipeline::OpusEncoderPipeline(const QAudioFormat &format) : format_(format), constants_(format) {
     int error;
     encoder_ = opus_encoder_create(format.sampleRate(), format.channelCount(), OPUS_APPLICATION_VOIP, &error);
     if (error < 0) {
@@ -14,7 +14,7 @@ AudioOpusPipeline::AudioOpusPipeline(const QAudioFormat &format) : format_(forma
     opus_encoder_ctl(encoder_, OPUS_SET_SIGNAL(OPUS_SIGNAL_VOICE));
 }
 
-QByteArray AudioOpusPipeline::encode(const QByteArray& frame) {
+QByteArray OpusEncoderPipeline::encode(const QByteArray& frame) {
     QByteArray out;
     out.reserve(constants_.frameByteSize);
     auto packetSize = opus_encode(encoder_,
@@ -30,7 +30,7 @@ QByteArray AudioOpusPipeline::encode(const QByteArray& frame) {
     return out;
 }
 
-QAudioFormat AudioOpusPipeline::format() const {
+QAudioFormat OpusEncoderPipeline::format() const {
     return format_;
 }
 
@@ -38,4 +38,32 @@ AudioStreamFormat::AudioStreamFormat(const QAudioFormat &format) {
     frameDuration = static_cast<int>(format.durationForFrames(1));
     samplesPerChannel = format.sampleRate() / 1000 * frameDuration;
     frameByteSize = samplesPerChannel * format.channelCount() * format.sampleSize() / 8;
+}
+
+OpusDecoderPipeline::OpusDecoderPipeline(const QAudioFormat &format) : format_(format), constants_(format) {
+    int error;
+    decoder_ = opus_decoder_create(format_.sampleRate(), format_.channelCount(), &error);
+    if (error < 0) {
+        qCritical() << "Failed to initialize decoder: received error code" << error;
+        return;
+    }
+}
+
+QByteArray OpusDecoderPipeline::decode(const QByteArray &frame) {
+    QByteArray pcm(static_cast<int>(sizeof(opus_int16)) * constants_.samplesPerChannel * format_.channelCount(), Qt::Uninitialized);
+    int samples = opus_decode(decoder_, reinterpret_cast<const quint8 *>(frame.data()), frame.size(),
+                              reinterpret_cast<opus_int16 *>(pcm.data()), constants_.frameByteSize, 0);
+
+    if (samples < 0) {
+        qCritical() << "Failed to decode, received code" << samples;
+    }
+
+    auto total = samples * format_.channelCount() * format_.sampleSize() / 8;
+    Q_ASSERT(pcm.size() <= total);
+    pcm.resize(total);
+    return pcm;
+}
+
+QAudioFormat OpusDecoderPipeline::format() const {
+    return format_;
 }
