@@ -4,7 +4,7 @@
 #include <QDebug>
 #include <opus/opus.h>
 
-AudioOpusPipeline::AudioOpusPipeline(const QAudioFormat &format) : format_(format) {
+AudioOpusPipeline::AudioOpusPipeline(const QAudioFormat &format) : format_(format), constants_(format) {
     int error;
     encoder_ = opus_encoder_create(format.sampleRate(), format.channelCount(), OPUS_APPLICATION_VOIP, &error);
     if (error < 0) {
@@ -15,17 +15,13 @@ AudioOpusPipeline::AudioOpusPipeline(const QAudioFormat &format) : format_(forma
 }
 
 QByteArray AudioOpusPipeline::encode(const QByteArray& frame) {
-    const auto msFrameDuration = static_cast<int>(format_.durationForFrames(1));
-    const auto samplesPerChannel = format_.sampleRate() / 1000 * msFrameDuration;
-    const auto frameByteSize = samplesPerChannel * format_.channelCount() * format_.sampleSize() / 8;
-
     QByteArray out;
-    out.reserve(frameByteSize);
+    out.reserve(constants_.frameByteSize);
     auto packetSize = opus_encode(encoder_,
                                   reinterpret_cast<const opus_int16 *>(frame.constData()),
-                                  samplesPerChannel,
+                                  constants_.samplesPerChannel,
                                   reinterpret_cast<quint8 *>(out.data()),
-                                  frameByteSize);
+                                  constants_.frameByteSize);
     if (packetSize < 0) {
         qCritical() << "Failed to encode a package (code" << packetSize << "), stopping";
         return QByteArray();
@@ -36,4 +32,10 @@ QByteArray AudioOpusPipeline::encode(const QByteArray& frame) {
 
 QAudioFormat AudioOpusPipeline::format() const {
     return format_;
+}
+
+AudioStreamFormat::AudioStreamFormat(const QAudioFormat &format) {
+    frameDuration = static_cast<int>(format.durationForFrames(1));
+    samplesPerChannel = format.sampleRate() / 1000 * frameDuration;
+    frameByteSize = samplesPerChannel * format.channelCount() * format.sampleSize() / 8;
 }

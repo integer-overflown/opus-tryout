@@ -6,6 +6,14 @@
 class QByteArray;
 class OpusEncoder;
 
+struct AudioStreamFormat {
+    int frameDuration;
+    int samplesPerChannel;
+    int frameByteSize;
+
+    explicit AudioStreamFormat(const QAudioFormat &);
+};
+
 class AudioOpusPipeline {
 public:
     explicit AudioOpusPipeline(const QAudioFormat &format);
@@ -15,6 +23,7 @@ public:
 private:
     QAudioFormat format_;
     OpusEncoder *encoder_;
+    const AudioStreamFormat constants_;
 };
 
 
