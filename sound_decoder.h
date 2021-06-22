@@ -12,7 +12,7 @@ class SoundDecoder : public QObject {
     Q_OBJECT
 public:
     explicit SoundDecoder(const QAudioDeviceInfo&, const QAudioFormat&);
-    ~SoundDecoder();
+    ~SoundDecoder() override;
 public slots:
     void start();
     void playDecoded(const QByteArray&);

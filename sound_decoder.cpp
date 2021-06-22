@@ -10,7 +10,7 @@ SoundDecoder::SoundDecoder(const QAudioDeviceInfo &device, const QAudioFormat &f
     int error;
     decoder_ = opus_decoder_create(format_.sampleRate(), format_.channelCount(), &error);
     if (error < 0) {
-        qCritical() << "Failed to initialize decoder: receiver error code" << error;
+        qCritical() << "Failed to initialize decoder: received error code" << error;
         return;
     }
 }
