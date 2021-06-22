@@ -10,7 +10,7 @@
 #include <QAudioInput>
 #include <QAudioDeviceInfo>
 #include <any>
-#include "sound_encoder_pipeline.h"
+#include "audio_opus_pipeline.h"
 
 class OpusEncoder;
 
@@ -28,7 +28,7 @@ signals:
     void frameEncoded(QByteArray);
 
 private:
-    SoundEncoderPipeline pipeline_;
+    AudioOpusPipeline pipeline_;
     QAudioDeviceInfo device_;
     QScopedPointer<QAudioInput> input_;
 };

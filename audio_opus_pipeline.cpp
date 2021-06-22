@@ -1,10 +1,10 @@
 #include <opus/opus_types.h>
-#include "sound_encoder_pipeline.h"
+#include "audio_opus_pipeline.h"
 
 #include <QDebug>
 #include <opus/opus.h>
 
-SoundEncoderPipeline::SoundEncoderPipeline(const QAudioFormat &format) : format_(format) {
+AudioOpusPipeline::AudioOpusPipeline(const QAudioFormat &format) : format_(format) {
     int error;
     encoder_ = opus_encoder_create(format.sampleRate(), format.channelCount(), OPUS_APPLICATION_VOIP, &error);
     if (error < 0) {
@@ -14,7 +14,7 @@ SoundEncoderPipeline::SoundEncoderPipeline(const QAudioFormat &format) : format_
     opus_encoder_ctl(encoder_, OPUS_SET_SIGNAL(OPUS_SIGNAL_VOICE));
 }
 
-QByteArray SoundEncoderPipeline::encode(const QByteArray& frame) {
+QByteArray AudioOpusPipeline::encode(const QByteArray& frame) {
     const auto msFrameDuration = static_cast<int>(format_.durationForFrames(1));
     const auto samplesPerChannel = format_.sampleRate() / 1000 * msFrameDuration;
     const auto frameByteSize = samplesPerChannel * format_.channelCount() * format_.sampleSize() / 8;
@@ -34,6 +34,6 @@ QByteArray SoundEncoderPipeline::encode(const QByteArray& frame) {
     return out;
 }
 
-QAudioFormat SoundEncoderPipeline::format() const {
+QAudioFormat AudioOpusPipeline::format() const {
     return format_;
 }
