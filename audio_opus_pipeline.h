@@ -14,9 +14,9 @@ struct AudioStreamFormat {
     explicit AudioStreamFormat(const QAudioFormat &);
 };
 
-class AudioOpusPipeline {
+class OpusEncoderPipeline {
 public:
-    explicit AudioOpusPipeline(const QAudioFormat &format);
+    explicit OpusEncoderPipeline(const QAudioFormat &format);
     QByteArray encode(const QByteArray&);
     [[nodiscard]] QAudioFormat format() const;
 

@@ -28,7 +28,7 @@ signals:
     void frameEncoded(QByteArray);
 
 private:
-    AudioOpusPipeline pipeline_;
+    OpusEncoderPipeline pipeline_;
     QAudioDeviceInfo device_;
     QScopedPointer<QAudioInput> input_;
 };
