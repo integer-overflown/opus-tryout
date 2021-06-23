@@ -8,26 +8,26 @@
 #include "sound_decoder.h"
 
 #include "audio_pipeline.h"
+#include "buffered_device.h"
+#include "encoder_device.h"
 
 int main(int argc, char *argv[]) {
     using namespace std::chrono_literals;
     QCoreApplication app(argc, argv);
 
-    QThread audio;
+    const auto dev = QAudioDeviceInfo::defaultInputDevice();
+    const auto fmt = AudioPipeline::setupAudioFormat(dev);
+    QAudioInput input(dev, fmt);
 
-    const QAudioDeviceInfo &deviceInfo = QAudioDeviceInfo::defaultInputDevice();
-    const QAudioFormat &format = AudioPipeline::setupAudioFormat(deviceInfo);
+    BufferedDevice buf;
+    EncoderDevice out;
+    buf.open(QIODevice::WriteOnly);
+    out.open(QIODevice::WriteOnly);
+    buf.setChunkSize(1920);
+    buf.pipe(&out);
 
-    SoundEncoder encoder(deviceInfo, format);
-    encoder.moveToThread(&audio);
-
-    SoundDecoder decoder(QAudioDeviceInfo::defaultOutputDevice(), format);
-
-    QObject::connect(&encoder, &SoundEncoder::frameEncoded, &decoder, &SoundDecoder::playDecoded);
-
-    audio.start();
-    encoder.start();
-    decoder.start();
+    out.open(QIODevice::WriteOnly);
+    input.start(&buf);
 
     return QCoreApplication::exec();
 }
