@@ -2,7 +2,8 @@
 #include <QDebug>
 
 PipeDevice *PipeDevice::pipe(PipeDevice *to) {
-    return pipe_ = to;
+    pipe_ = to;
+    return to;
 }
 
 void PipeDevice::redirect(QIODevice *to) {

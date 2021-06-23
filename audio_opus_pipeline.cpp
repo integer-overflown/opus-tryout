@@ -61,6 +61,7 @@ QByteArray OpusDecoderPipeline::decode(const QByteArray &frame) {
     auto total = samples * format_.channelCount() * format_.sampleSize() / 8;
     Q_ASSERT(pcm.size() <= total);
     pcm.resize(total);
+    qDebug() << "DECODER: received packet [ size" << frame.size() << "] decompressed to" << total;
     return pcm;
 }
 
