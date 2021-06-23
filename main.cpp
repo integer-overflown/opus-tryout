@@ -9,7 +9,7 @@
 
 #include "audio_pipeline.h"
 #include "buffered_device.h"
-#include "encoder_device.h"
+#include "transforming_device.h"
 
 int main(int argc, char *argv[]) {
     using namespace std::chrono_literals;
@@ -22,10 +22,18 @@ int main(int argc, char *argv[]) {
 
     const auto outDevice = output.start();
 
+    auto encoder = std::make_unique<OpusEncoderPipeline>(fmt);
+    auto decoder = std::make_unique<OpusDecoderPipeline>(fmt);
+
     BufferedDevice buf;
+    TransformingDevice enc([i = encoder.get()](auto buf) { return i->encode(buf); });
+    TransformingDevice dec([i = decoder.get()](auto buf) { return i->decode(buf); });
+    enc.open(QIODevice::WriteOnly);
+    dec.open(QIODevice::WriteOnly);
+
     buf.open(QIODevice::WriteOnly);
     buf.setChunkSize(1920);
-    buf.pipe(outDevice);
+    buf.pipe(&enc)->pipe(&dec)->redirect(outDevice);
 
     input.start(&buf);
 
