@@ -7,7 +7,6 @@ class QAudioDeviceInfo;
 class AudioPipeline {
 public:
     explicit AudioPipeline(const QAudioFormat&);
-    static QAudioFormat setupAudioFormat(const QAudioDeviceInfo &);
 
     [[nodiscard]] QAudioFormat format() const;
     [[nodiscard]] int getFrameDuration() const;
