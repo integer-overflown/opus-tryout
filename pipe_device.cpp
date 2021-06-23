@@ -1,7 +1,11 @@
 #include "pipe_device.h"
 #include <QDebug>
 
-void PipeDevice::pipe(QIODevice *to) {
+PipeDevice *PipeDevice::pipe(PipeDevice *to) {
+    return pipe_ = to;
+}
+
+void PipeDevice::redirect(QIODevice *to) {
     pipe_ = to;
 }
 
