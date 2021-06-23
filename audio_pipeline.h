@@ -1,16 +1,23 @@
 #ifndef OPUS_TRYOUT_AUDIO_PIPELINE_H
 #define OPUS_TRYOUT_AUDIO_PIPELINE_H
+#include <QAudioFormat>
 
-class QAudioFormat;
 class QAudioDeviceInfo;
 
 class AudioPipeline {
 public:
+    explicit AudioPipeline(const QAudioFormat&);
     static QAudioFormat setupAudioFormat(const QAudioDeviceInfo &);
-public:
-    static constexpr int kSampleRate = 48'000;
-    static constexpr int kChannelCount = 1;
-    static constexpr int kSampleSize = 16;
+
+    [[nodiscard]] QAudioFormat format() const;
+    [[nodiscard]] int getFrameDuration() const;
+    [[nodiscard]] int getSamplesPerChannel() const;
+    [[nodiscard]] int getFrameByteSize() const;
+private:
+    int frame_duration_;
+    int samples_per_channel_;
+    int frame_byte_size_;
+    QAudioFormat format_;
 };
 
 

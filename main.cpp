@@ -5,7 +5,6 @@
 #include <opus/opus.h>
 
 #include "sound_encoder.h"
-#include "sound_decoder.h"
 
 #include "audio_pipeline.h"
 #include "buffered_device.h"
@@ -32,7 +31,7 @@ int main(int argc, char *argv[]) {
     dec.open(QIODevice::WriteOnly);
 
     buf.open(QIODevice::WriteOnly);
-    buf.setChunkSize(1920);
+    buf.setChunkSize(encoder->getFrameByteSize());
     buf.pipe(&enc)->pipe(&dec)->redirect(outDevice);
 
     input.start(&buf);

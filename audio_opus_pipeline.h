@@ -3,40 +3,29 @@
 
 #include <QAudioFormat>
 
+#include "audio_pipeline.h"
+
 class QByteArray;
 class OpusEncoder;
 class OpusDecoder;
 
-struct AudioStreamFormat {
-    int frameDuration;
-    int samplesPerChannel;
-    int frameByteSize;
-
-    explicit AudioStreamFormat(const QAudioFormat &);
-};
-
-class OpusEncoderPipeline {
+class OpusEncoderPipeline : public AudioPipeline {
 public:
     explicit OpusEncoderPipeline(const QAudioFormat &format);
+    ~OpusEncoderPipeline();
     QByteArray encode(const QByteArray&);
-    [[nodiscard]] QAudioFormat format() const;
 
 private:
-    QAudioFormat format_;
     OpusEncoder *encoder_;
-    const AudioStreamFormat constants_;
 };
 
-class OpusDecoderPipeline {
+class OpusDecoderPipeline : public AudioPipeline {
 public:
     explicit OpusDecoderPipeline(const QAudioFormat &format);
+    ~OpusDecoderPipeline();
     QByteArray decode(const QByteArray&);
-    [[nodiscard]] QAudioFormat format() const;
-
 private:
-    QAudioFormat format_;
     OpusDecoder *decoder_;
-    const AudioStreamFormat constants_;
 };
 
 
