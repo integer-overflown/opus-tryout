@@ -50,7 +50,7 @@ OpusDecoderPipeline::OpusDecoderPipeline(const QAudioFormat &format) : format_(f
 }
 
 QByteArray OpusDecoderPipeline::decode(const QByteArray &frame) {
-    QByteArray pcm(static_cast<int>(sizeof(opus_int16)) * constants_.samplesPerChannel * format_.channelCount(), Qt::Uninitialized);
+    QByteArray pcm(constants_.frameByteSize, Qt::Uninitialized);
     int samples = opus_decode(decoder_, reinterpret_cast<const quint8 *>(frame.data()), frame.size(),
                               reinterpret_cast<opus_int16 *>(pcm.data()), constants_.frameByteSize, 0);
 
