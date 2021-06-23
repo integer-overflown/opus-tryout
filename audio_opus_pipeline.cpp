@@ -49,10 +49,9 @@ OpusDecoderPipeline::~OpusDecoderPipeline() {
 }
 
 QByteArray OpusDecoderPipeline::decode(const QByteArray &frame) {
-    const auto frameSize = getFrameByteSize();
-    QByteArray pcm(frameSize, Qt::Uninitialized);
+    QByteArray pcm(getFrameByteSize(), Qt::Uninitialized);
     int samples = opus_decode(decoder_, reinterpret_cast<const quint8 *>(frame.data()), frame.size(),
-                              reinterpret_cast<opus_int16 *>(pcm.data()), frameSize, 0);
+                              reinterpret_cast<opus_int16 *>(pcm.data()), getSamplesPerChannel(), 0);
 
     if (samples < 0) {
         qCritical() << "Failed to decode, received code" << samples;
