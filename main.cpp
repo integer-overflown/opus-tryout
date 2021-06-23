@@ -18,15 +18,15 @@ int main(int argc, char *argv[]) {
     const auto dev = QAudioDeviceInfo::defaultInputDevice();
     const auto fmt = AudioPipeline::setupAudioFormat(dev);
     QAudioInput input(dev, fmt);
+    QAudioOutput output(QAudioDeviceInfo::defaultOutputDevice(), fmt);
+
+    const auto outDevice = output.start();
 
     BufferedDevice buf;
-    EncoderDevice out;
     buf.open(QIODevice::WriteOnly);
-    out.open(QIODevice::WriteOnly);
     buf.setChunkSize(1920);
-    buf.pipe(&out);
+    buf.pipe(outDevice);
 
-    out.open(QIODevice::WriteOnly);
     input.start(&buf);
 
     return QCoreApplication::exec();

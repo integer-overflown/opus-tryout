@@ -4,9 +4,12 @@
 
 class PipeDevice : public QIODevice {
 public:
-    QIODevice* pipe(QIODevice *);
+    void pipe(QIODevice *);
+    bool open(OpenMode mode) override;
 protected:
-    QIODevice *getPipe() const;
+    qint64 readData(char *data, qint64 maxlen) override;
+protected:
+    [[nodiscard]] QIODevice *getPipe() const;
 private:
     QIODevice *pipe_;
 };

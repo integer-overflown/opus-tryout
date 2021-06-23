@@ -1,9 +1,20 @@
 #include "pipe_device.h"
+#include <QDebug>
 
-QIODevice *PipeDevice::pipe(QIODevice *to) {
-    return pipe_ = to;
+void PipeDevice::pipe(QIODevice *to) {
+    pipe_ = to;
 }
 
 QIODevice *PipeDevice::getPipe() const {
     return pipe_;
+}
+
+bool PipeDevice::open(QIODevice::OpenMode mode) {
+    if (mode & WriteOnly) return QIODevice::open(mode);
+    qWarning() << "Pipe devices can only be opened in write-only mode";
+    return false;
+}
+
+qint64 PipeDevice::readData(char *data, qint64 maxlen) {
+    return 0;
 }
