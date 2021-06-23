@@ -1,12 +1,11 @@
 #include <QCoreApplication>
 #include <QThread>
 #include <QDebug>
+#include <QAudioInput>
 #include <QAudioOutput>
-#include <opus/opus.h>
-
-#include "sound_encoder.h"
 
 #include "audio_pipeline.h"
+#include "audio_opus_pipeline.h"
 #include "buffered_device.h"
 #include "transforming_device.h"
 
