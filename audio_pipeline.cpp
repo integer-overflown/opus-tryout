@@ -15,12 +15,13 @@ QAudioFormat AudioPipeline::setupAudioFormat(const QAudioDeviceInfo &device) {
     if (!device.isFormatSupported(fmt)) {
         qInfo() << "Format is not supported, falling back to nearest";
         fmt = device.nearestFormat(fmt);
-        qInfo() << "FORMAT: sample rate" << fmt.sampleRate() << "Hz";
-        qInfo() << "FORMAT: channel count" << fmt.channelCount();
-        qInfo() << "FORMAT: sample size" << fmt.sampleSize() << "bits";
-        qInfo() << "FORMAT: byte order" << fmt.byteOrder();
-        qInfo() << "";
     }
+
+    qInfo() << "FORMAT: sample rate" << fmt.sampleRate() << "Hz";
+    qInfo() << "FORMAT: channel count" << fmt.channelCount();
+    qInfo() << "FORMAT: sample size" << fmt.sampleSize() << "bits";
+    qInfo() << "FORMAT: byte order" << fmt.byteOrder();
+    qInfo() << "";
 
     return fmt;
 }
