@@ -2,7 +2,7 @@
 #include "audio_opus_pipeline.h"
 
 #include <QDebug>
-#include <opus/opus.h>
+#include <opus.h>
 
 OpusEncoderPipeline::OpusEncoderPipeline(const QAudioFormat &format) : AudioPipeline(format) {
     int error;
