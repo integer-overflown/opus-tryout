@@ -58,12 +58,12 @@ int main(int argc, char *argv[]) {
 
     const auto outDevice = output.start();
 
-    auto encoder = std::make_unique<OpusEncoderPipeline>(fmt);
-    auto decoder = std::make_unique<OpusDecoderPipeline>(fmt);
+    auto encoder = std::make_shared<OpusEncoderPipeline>(fmt);
+    auto decoder = std::make_shared<OpusDecoderPipeline>(fmt);
 
     BufferedDevice buf;
-    TransformingDevice enc([i = encoder.get()](auto buf) { return i->encode(buf); });
-    TransformingDevice dec([i = decoder.get()](auto buf) { return i->decode(buf); });
+    TransformingDevice enc([encoder](auto buf) { return encoder->encode(buf); });
+    TransformingDevice dec([decoder](auto buf) { return decoder->decode(buf); });
 
     // TODO: deal with repeated open() somehow
     enc.open(QIODevice::WriteOnly);
